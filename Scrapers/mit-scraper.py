@@ -75,4 +75,4 @@ if __name__ == "__main__":
     except EOFError:
         # Reached the end of the input
         pass
-    outputToCsv("mit.csv", courses)
+    outputToCsv("../CSV-info/mit.csv", courses)

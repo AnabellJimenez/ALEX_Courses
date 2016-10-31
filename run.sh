@@ -4,7 +4,6 @@ for SCRIPT in *
     do
         if [ -f $SCRIPT -a -x $SCRIPT ]
         then
-#            echo $(pwd)
-            ./$SCRIPT
+            ./$SCRIPT 2> ../log/$SCRIPT
         fi
     done

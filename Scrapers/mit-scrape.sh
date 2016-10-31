@@ -1,3 +1,4 @@
+cd ./mit
 rm *.html*
 wget -nd -r -np -k -A "*.html*" -I /subjects http://catalog.mit.edu/subjects
 rm -f robots.txt

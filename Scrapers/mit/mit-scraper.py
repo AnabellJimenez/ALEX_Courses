@@ -28,7 +28,7 @@ def courseExtract(course):
     courseId = courseName[:courseName.index(" ")]
     courseTitle = courseName[courseName.index(" "):]
     courseNumber = courseId.split(".")[0]
-    
+
     try:
         # This will fail if professor is not specified e.g. research subjects
         profs = courseInfo.find(class_="courseblockinstructors").text

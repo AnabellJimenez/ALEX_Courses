@@ -51,4 +51,4 @@ if __name__ == "__main__":
         course["Category"] = courseAreas[i].text.encode('ascii', 'ignore')
         courses.append(course)
 
-    outputToCsv("../CSV-info/bhcc.csv", courses)
+    outputToCsv("../../CSV-info/bhcc.csv", courses)

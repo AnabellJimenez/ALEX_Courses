@@ -19,21 +19,19 @@ def getTerms(rawTerms):
 def courseExtract(course):
     courseDic = {}
     courseInfo = BeautifulSoup(course, "lxml")
-    courseName = courseInfo.find(class_="courseblocktitle").text.encode('ascii', 'ignore')
-    descr = courseInfo.find(class_="courseblockdesc").text.encode('ascii', 'ignore')
+    courseName = courseInfo.find(class_="course-title").text.encode('ascii', 'ignore')
+    courseCredit = courseInfo.find(class_="field-course-credits").text.encode('ascii', 'ignore').replace("\t", "")
+    courseDescr = courseInfo.findAll("p")[-1].text.encode('ascii', 'ignore').replace("\t", "")
+
 
     courseArea = courseName[:4]
     courseNum = courseName[4:8]
-    courseTitle = courseName.split(".")[1]
-    courseCredit = courseName.split(".")[-2].split(" ")[-2]
-
-
-    courseDic["Course Id"] = courseNum
+    courseTitle = courseName.split("-")[1]
+    courseDic["Course Area"] = courseArea
+    courseDic["Course Num"] = courseNum
     courseDic["Course Title"] = courseTitle
-    courseDic["Course Areas"] = courseArea
-    courseDic["Course Credit"] = courseCredit
-    courseDic["Course Description"] = descr.replace("\n", "")
-    print courseArea, courseNum, courseTitle, courseCredit
+    courseDic["Course Description"] = courseDescr
+    courseDic["Credit"] = courseCredit
     return courseDic
 
 
@@ -57,10 +55,9 @@ if __name__ == "__main__":
             print file_name
             soup = BeautifulSoup(open(file_name), "lxml")
 
-            for course in soup.findAll("div", class_="courseblock"):
+            for course in soup.findAll("article", class_="course-listing"):
                 courses.append(courseExtract(course.__str__()))
     except EOFError:
         # Reached the end of the input
         pass
-    print courses
-    outputToCsv("../../CSV-info/northeastern.csv", courses)
+    outputToCsv("../../CSV-info/olin.csv", courses)

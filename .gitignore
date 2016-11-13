@@ -1,5 +1,6 @@
 *.pyc
-*.html*
+*.html.*
 *.php*
 *robots.txt*
 */test/*
+.idea

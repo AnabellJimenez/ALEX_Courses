@@ -82,10 +82,10 @@ class SimmonsSpider:
                          if isinstance(c, bs4.element.NavigableString)]
                     )
                     course = utils.clean_course(course)
+                    self.courses.append(course)
             elif (element.name == 'div' and
                     element.attrs == {'class': ['separator']} and
                     course):
-                self.courses.append(course)
                 course = {'category': cur_category}
 
 

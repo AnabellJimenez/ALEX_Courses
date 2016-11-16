@@ -1,8 +1,7 @@
 import utils
 
 import scrapy
-from scrapy.spiders import CrawlSpider, Rule
-from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
+from scrapy.spiders import CrawlSpider
 
 
 class FisherCollegeSpider(CrawlSpider):
@@ -12,19 +11,6 @@ class FisherCollegeSpider(CrawlSpider):
     start_urls = [
         ('http://www.fisher.edu/academics/catalogs/course-descriptions')
     ]
-    # rules = (
-    #     # Follow the links for each year of actions
-    #     Rule(
-    #         LxmlLinkExtractor(
-    #             allow=(
-    #                 '\/RelId\/.*',
-    #             ),
-    #             restrict_xpaths=('//div[@id="TS_D_G_Guide1Ajax"]')
-    #         ),
-    #         callback='parse_items',
-    #         follow=True
-    #     ),
-    # )
 
     def parse(self, response):
         """
@@ -43,14 +29,11 @@ class FisherCollegeSpider(CrawlSpider):
 
 
     def parse_category_page(self, response):
-        # print response._url
-        next_page = response.xpath('//a[@id="TS_D_G_ctl18_BTnext"]/@href')
-        if next_page:
-            link = next_page.extract()[0]
-            if not link.startswith('http'):
-                link = self.url + link
-            yield scrapy.Request(link, callback=self.parse_category_page)
-
+        """
+        Parse the page for a particular category and find all links to
+        individual course pages, then follow them and pass new page to
+        another callback.
+        """
         course_links = response.xpath(
             '//div[@id="TS_D_G_Guide1Ajax"]/div/table/tbody/tr/td/table'
             '/tbody/tr/td/a/@href'
@@ -61,7 +44,18 @@ class FisherCollegeSpider(CrawlSpider):
                 link = self.url + link
             yield scrapy.Request(link, callback=self.parse_course)
 
+        # Some of these pages have a "Next >" option to follow as well.
+        next_page = response.xpath('//a[@id="TS_D_G_ctl18_BTnext"]/@href')
+        if next_page:
+            link = next_page.extract()[0]
+            if not link.startswith('http'):
+                link = self.url + link
+            yield scrapy.Request(link, callback=self.parse_category_page)
+
     def parse_course(self, response):
+        """
+        Scrape the contents for an individual course.
+        """
         course = {}
         course['title'] = response.xpath(
             '//h1/a[@class="title"]/text()'
@@ -69,6 +63,8 @@ class FisherCollegeSpider(CrawlSpider):
         course['category'] = response.xpath(
             '//div[@class="Breads"]/span/text()'
         ).extract()[0]
+
+        # The description element manifests differently on every course page!
         desc_all = response.xpath(
             '//span[@class="text"]/descendant-or-self::*/text()'
         )
@@ -90,5 +86,5 @@ class FisherCollegeSpider(CrawlSpider):
         else:
             course['prerequisite'] = None
         course['description'] = '; '.join(desc_filtered)
-        print course
+        print course['title']
         yield utils.clean_course(course)

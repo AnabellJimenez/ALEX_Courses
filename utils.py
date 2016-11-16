@@ -16,9 +16,12 @@ def clean_course(course_dict):
     new_course_dict = {}
 
     for key, val in course_dict.iteritems():
-        first = re.sub(remove_others, '', val)
-        second = re.sub(remove_multiple_spaces, '', first)
-        final = second.encode('ascii', 'ignore')
+        if val is not None:
+            first = re.sub(remove_others, '', val)
+            second = re.sub(remove_multiple_spaces, '', first)
+            final = second.encode('ascii', 'ignore')
+        else:
+            final = val
         new_course_dict[key] = final
 
     return new_course_dict

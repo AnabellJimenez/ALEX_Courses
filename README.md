@@ -1,8 +1,9 @@
 # catalog-scraper
-So far only works for MIT, but trying for other colleges as well.
+To run:
+./run.sh
 
 To get:
-1. working instal
+* 1. working instal
   pip install beautifulsoup4
 2. If on mac make sure wget is install
 3. Run scrape.sh

@@ -1,0 +1,2 @@
+cd wentworth_institute_of_technology
+python spider.py

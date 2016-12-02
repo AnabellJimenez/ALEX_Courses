@@ -27,19 +27,20 @@ def clean_course(course_dict):
     return new_course_dict
 
 
-def courses_to_csv(courses, file_name):
+def courses_to_csv(courses, file_name, fields=None):
     """
     Writes courses to a csv file in the csv directory.
     :param courses: list of dictionaries, each dictionary should have same keys.
     :param file_name: name of the file
     """
-    keys = courses[0].keys()
-
+    if fields is None:
+        fields = courses[0].keys()
+    print fields
     full_path = '{}/CSV-info/{}'.format(
         os.path.dirname(os.path.realpath(__file__)),
         file_name
     )
     with open(full_path, 'w') as output_file:
-        dict_writer = csv.DictWriter(output_file, keys)
+        dict_writer = csv.DictWriter(output_file, fields, extrasaction='ignore')
         dict_writer.writeheader()
         dict_writer.writerows(courses)
